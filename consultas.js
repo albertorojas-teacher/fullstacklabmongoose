@@ -47,6 +47,18 @@ async function ejecutarConsultas() {
       "\n4. Top cursos de instructores senior ordenados por duracion:",
     );
     console.log(cursosAvanzados);
+
+    //Consulta 5: findOne devuelve el primer documento coincidente (o null si no existe)
+    // Haremos un ejemplo donde, MONGO-301 se inserta en seed
+
+    const cursoEspecifico = await Curso.findOne({
+      codigo: "MONGO-301",
+    });
+
+    console.log("\n5. Busqueda exacta con findOne de (MONGO-301)");
+    console.log(
+      `Titulo: ${cursoEspecifico.titulo} | Creado el: ${cursoEspecifico.createdAt}`,
+    );
   } catch (error) {
     console.error("Error en las consultas:", error.message);
   } finally {
