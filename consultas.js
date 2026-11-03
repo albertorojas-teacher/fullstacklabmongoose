@@ -33,6 +33,20 @@ async function ejecutarConsultas() {
     }).select("titulo etiquetas -_id");
     console.log("\n3. Cursos con etiquetas javascript o nosql:");
     console.log(cursoPorTag);
+
+    // Consulta 4: la ruta con punto accede a un campo de un subdocumento
+    // $gte significa "mayor que o igual que"; sort(-1) ordena de mayor a menor y limit(3) trae 3 resultados
+    const cursosAvanzados = await Curso.find({
+      "instructor.experienciaAnios": { $gte: 8 },
+    })
+      .sort({ duracionHoras: -1 })
+      .limit(3)
+      .select("titulo duracionHoras instructor.nombre -_id");
+
+    console.log(
+      "\n4. Top cursos de instructores senior ordenados por duracion:",
+    );
+    console.log(cursosAvanzados);
   } catch (error) {
     console.error("Error en las consultas:", error.message);
   } finally {
