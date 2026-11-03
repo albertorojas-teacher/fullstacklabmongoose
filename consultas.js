@@ -17,7 +17,15 @@ async function ejecutarConsultas() {
       publicado: true,
     });
     console.log("1.- Cursos de Frontend publicados:", cursosFrontend.length);
-    console.log(cursosFrontend);
+
+    // Consulta 2: $lte significa "menor o igual que"; select limita los campos deseados o devueltos
+    // El prefijo - excluye
+    const cursosEconomicos = await Curso.find({
+      precio: { $lte: 40 },
+    }).select("codigo titulo precio -_id");
+    console.log("\n2.Cursos por 40 EUR o menos(solo codigo, titulo y precio)");
+    //
+    console.table(cursosEconomicos.map((c) => c.toObject()));
   } catch (error) {
     console.error("Error en las consultas:", error.message);
   } finally {
