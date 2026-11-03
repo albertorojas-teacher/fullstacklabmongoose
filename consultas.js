@@ -26,6 +26,13 @@ async function ejecutarConsultas() {
     console.log("\n2.Cursos por 40 EUR o menos(solo codigo, titulo y precio)");
     //
     console.table(cursosEconomicos.map((c) => c.toObject()));
+
+    // Consulta 3: $in encuentra documentos cuya lista de etiquetas incluya cualquiera de los valores siguientes
+    const cursoPorTag = await Curso.find({
+      etiquetas: { $in: ["javascript", "nosql"] },
+    }).select("titulo etiquetas -_id");
+    console.log("\n3. Cursos con etiquetas javascript o nosql:");
+    console.log(cursoPorTag);
   } catch (error) {
     console.error("Error en las consultas:", error.message);
   } finally {
