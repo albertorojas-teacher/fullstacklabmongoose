@@ -4,6 +4,12 @@ import Curso from "../models/Curso.js";
 // Punto de entrada de la nuestra Api: recibe una peticion HTTP y construye una respuesta JSON
 
 export default async function handler(req, res) {
+  // Solo se permite consultar cursos mediante GET
+  if (req.method !== "GET") {
+    res.setHeader("Allow", "GET");
+    return res.status(405).json({ error: "Metodo no permitido" });
+  }
+
   try {
     // Abre la conexion solo si no existe una activa; evita reconectar en cada peticion
     if (mongoose.connection.readyState === 0) {
@@ -19,7 +25,7 @@ export default async function handler(req, res) {
 
     // Añadir una condicion de igualdad para la categoria indicada
     if (categoria) {
-      filtro.precio = categoria;
+      filtro.categoria = categoria;
     }
 
     // $lte que significa "menor o igual que"; Number convierte el parametro de texto a numero
@@ -47,10 +53,16 @@ export default async function handler(req, res) {
       datos: cursos,
     });
   } catch (error) {
-    // Si falla la conexion o la consulta, devuelve un error HTTP 500 con el detalle disponible
-    return res.status(500).json({
-      error: "Error al consultar la base de datos",
-      detalle: error.message,
-    });
+    // Registra el error completo en el servidor, sin exponer detalles internos al cliente
+    console.error("Error en /api/cursos:", error);
+
+    const respuesta = { error: "Error al consultar la base de datos" };
+
+    // En desarrollo se incluye el detalle para facilitar la depuracion
+    if (process.env.NODE_ENV !== "production") {
+      respuesta.detalle = error.message;
+    }
+
+    return res.status(500).json(respuesta);
   }
 }

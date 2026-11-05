@@ -84,11 +84,20 @@ async function poblarBaseDeDatos() {
         instructor: { nombre: "Pedro" },
       });
     } catch (errorValidacion) {
-      // Recorrer los errores por campo para mostrar que regla rechazo cada dato
-      console.log("Mongoose bloqueo el documento invalido con exito");
-      Object.values(errorValidacion.errors).forEach((err) => {
-        console.log(`- Campo [${err.path}: ${err.message}]`);
-      });
+      // Comprobar que el error incluye errores por campo antes de recorrerlos
+      if (errorValidacion.errors) {
+        // Recorrer los errores por campo para mostrar que regla rechazo cada dato
+        console.log("Mongoose bloqueo el documento invalido con exito");
+        Object.values(errorValidacion.errors).forEach((err) => {
+          console.log(`- Campo [${err.path}: ${err.message}]`);
+        });
+      } else {
+        // Cubre otros fallos, como problemas de conexion o de escritura
+        console.error(
+          "Error al validar el documento:",
+          errorValidacion.message,
+        );
+      }
     }
   } catch (error) {
     // Informa de errores generales, como por ejemplo fallos de conexion, fallo en la insercion de datos.
