@@ -56,9 +56,13 @@ async function ejecutarConsultas() {
     });
 
     console.log("\n5. Busqueda exacta con findOne de (MONGO-301)");
-    console.log(
-      `Titulo: ${cursoEspecifico.titulo} | Creado el: ${cursoEspecifico.createdAt}`,
-    );
+    if (cursoEspecifico) {
+      console.log(
+        `Titulo: ${cursoEspecifico.titulo} | Creado el: ${cursoEspecifico.createdAt}`,
+      );
+    } else {
+      console.log("No se encontro ningun curso con el codigo MONGO-301");
+    }
   } catch (error) {
     console.error("Error en las consultas:", error.message);
   } finally {
